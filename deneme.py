@@ -1,7 +1,7 @@
 import random
 
 shapes = {
-    "kare": """
+    "dikdörtgen": """
     -----
     |   |
     |   |
@@ -18,7 +18,7 @@ shapes = {
      /  \\
     /____\\
     """,
-    "dikdörtgen": """
+    "kare": """
     --------
     |      |
     |      |
