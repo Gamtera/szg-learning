@@ -22,7 +22,44 @@ except cv2.error as e:
     exit()
 
 # Kamerayı başlat
-cap = cv2.VideoCapture(0)
+def list_available_cameras(max_index=5):
+    available_cameras = []
+    for i in range(max_index):
+        cap = cv2.VideoCapture(i)
+        if cap.isOpened():
+            ret, frame = cap.read()
+            if ret:
+                available_cameras.append(i)
+            cap.release()
+    return available_cameras
+
+def initialize_camera():
+    available_cameras = list_available_cameras()
+    if not available_cameras:
+        print("Hiçbir kamera açılamadı.")
+        return None
+
+    print("Kullanılabilir kameralar: ", available_cameras)
+    camera_index = int(input("Kullanmak istediğiniz kamera indeksini girin: "))
+    if camera_index not in available_cameras:
+        print(f"Geçersiz kamera indeksi: {camera_index}")
+        return None
+
+    cap = cv2.VideoCapture(camera_index)
+    if cap.isOpened():
+        ret, frame = cap.read()
+        if ret:
+            print(f"Kamera {camera_index} ile açıldı.")
+            return cap
+        else:
+            print(f"Kamera {camera_index} ile açıldı ama görüntü alınamadı.")
+    else:
+        print(f"Kamera {camera_index} ile açılamadı.")
+    return None
+
+cap = initialize_camera()
+if cap is None:
+    exit()
 
 while True:
     # Kameradan bir kare oku
