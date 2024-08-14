@@ -9,7 +9,7 @@ model = "mobilenet_iter_73000.caffemodel"
 CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
            "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
            "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
-           "sofa", "train", "tvmonitor", "controlpanel"]
+           "sofa", "train", "tvmonitor"]
 
 # Renkler
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
