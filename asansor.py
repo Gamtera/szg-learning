@@ -57,3 +57,4 @@ while True:
 # Temizlik
 cap.release()
 cv2.destroyAllWindows()
+#deneme
