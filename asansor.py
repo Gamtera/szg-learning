@@ -6,11 +6,13 @@ import tensorflow as tf
 model_path = "keras_model.h5"
 model = tf.keras.models.load_model(model_path)
 
+
 # Etiketleri dosyadan yükleyin
 def load_labels(label_file):
     with open(label_file, 'r') as f:
         labels = [line.strip().split(' ', 1)[1] for line in f.readlines()]
     return labels
+
 
 labels_file = "labels.txt"
 LABELS = load_labels(labels_file)

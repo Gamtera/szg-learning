@@ -5,7 +5,7 @@ from tensorflow.keras.models import load_model
 from PIL import Image, ImageOps
 
 # Modeli yükle (SavedModel formatında ya da h5 formatında olabilir)
-model = load_model('your_model_path/saved_model_directory_or_keras_model.h5')
+model = load_model("keras_model.h5")
 
 # Etiketleri yükle
 class_names = open("labels.txt", "r").readlines()
