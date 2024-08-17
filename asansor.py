@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 # TensorFlow model dosyasını yükleyin (modelinizin yolu ile değiştirin)
-model_path = "keras_model.h5"
+model_path = "my_model.keras"
 model = tf.keras.models.load_model(model_path)
 
 
