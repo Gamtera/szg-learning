@@ -2,16 +2,14 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-# YOLO modelini yükleyin
+# YOLO modelini yükleyin (mevcut nesne tespiti için)
 net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
 layer_names = net.getLayerNames()
 output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
-
-
-# TensorFlow modelinizi yükleyin
-model = tf.keras.models.load_model("my_model.keras")
-labels = ["elevator", "not elevator"]
+# Yeni eğitilmiş TensorFlow modelinizi yükleyin
+model = tf.keras.models.load_model("pano_modeli3.keras")  # Yeni model dosyası adı burada
+labels = ["devre kesici", "inventör", "klemens", "kontaktör"]  # Modelin sınıflandırdığı etiketler
 
 cap = cv2.VideoCapture(0)
 
@@ -51,27 +49,31 @@ while True:
                 confidences.append(float(confidence))
                 class_ids.append(class_id)
 
-    indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)
+    # Tespit edilen nesneler için NMS uygulayın
+    indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.3, 0.1)  # NMS parametrelerini düşürdüm
+
+    if len(indexes) > 0:
+        indexes = indexes.flatten()  # Düz listeye dönüştürüyoruz
 
     for i in range(len(boxes)):
-        if i in indexes:
+        if len(indexes) == 0 or i in indexes:  # indexes listesi boşsa bile kutuları göster
             x, y, w, h = boxes[i]
             roi = frame[y:y+h, x:x+w]
-            roi_resized = cv2.resize(roi, (224, 224)) / 255.0
+            roi_resized = cv2.resize(roi, (224, 224)) / 255.0  # Model girdi boyutuna göre
             roi_resized = np.expand_dims(roi_resized, axis=0)
 
-            # Sınıflandırma yap
+            # Parça sınıflandırması yap
             predictions = model.predict(roi_resized)
             predicted_label = labels[np.argmax(predictions)]
-
+            
             # Çerçeve ve etiket çiz
             label = "{}: {:.2f}%".format(predicted_label, np.max(predictions) * 100)
-            color = (0, 255, 0) if predicted_label == "elevator" else (0, 0, 255)
+            color = (0, 255, 0)  # Yeşil renk ile çerçeve çiz
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
     # Sonucu göster
-    cv2.imshow("Image", frame)
+    cv2.imshow("Elektrik Kontrol Panosu", frame)
 
     # 'q' tuşuna basarak çık
     if cv2.waitKey(1) & 0xFF == ord('q'):

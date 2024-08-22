@@ -34,7 +34,7 @@ base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(224
 x = base_model.output
 x = GlobalAveragePooling2D()(x)
 x = Dense(128, activation='relu')(x)
-predictions = Dense(2, activation='softmax')(x)
+predictions = Dense(4, activation='softmax')(x)  # 4 sınıf
 
 model = Model(inputs=base_model.input, outputs=predictions)
 
@@ -49,8 +49,8 @@ model.fit(
     steps_per_epoch=train_generator.samples // train_generator.batch_size,
     validation_data=validation_generator,
     validation_steps=validation_generator.samples // validation_generator.batch_size,
-    epochs=10  # Eğitim için epoch sayısını artırabilirsiniz
+    epochs=50  # Eğitim için epoch sayısını artırabilirsiniz
 )
 
 # Modelin kaydedilmesi
-model.save('my_model.keras')
+model.save('pano_modeli2.keras')
