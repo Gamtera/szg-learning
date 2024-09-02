@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 # Model ve etiketleri yükleme
-model = tf.keras.models.load_model('./pano_modeli3.keras')
+model = tf.keras.models.load_model('my_model.keras')
 category_index = {0: 'Devre Kesici', 1: 'Inventor', 2: 'Klemens', 3: 'Kontaktor'}
 
 # Pencere boyutu ve kaydırma adımı

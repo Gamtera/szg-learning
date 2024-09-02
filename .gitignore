@@ -9960,3 +9960,4 @@ yolo3.cfg
 .venv/Lib/site-packages/tensorflow-2.17.0.dist-info/WHEEL
 yolov3.cfg
 yolov3.weights
+model_egitim.keras

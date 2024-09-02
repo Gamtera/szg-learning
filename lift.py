@@ -8,8 +8,8 @@ layer_names = net.getLayerNames()
 output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # Yeni eğitilmiş TensorFlow modelinizi yükleyin
-model = tf.keras.models.load_model("pano_modeli3.keras")  # Yeni model dosyası adı burada
-labels = ["devre kesici", "inventör", "klemens", "kontaktör"]  # Modelin sınıflandırdığı etiketler
+model = tf.keras.models.load_model("model_egitim.keras")  # Yeni model dosyası adı burada
+labels = {0: 'devre kesici', 1: 'inventer', 2: 'klemens', 3: 'kontaktor'}  # Modelin sınıflandırdığı etiketler
 
 cap = cv2.VideoCapture(0)
 
@@ -58,7 +58,17 @@ while True:
     for i in range(len(boxes)):
         if len(indexes) == 0 or i in indexes:  # indexes listesi boşsa bile kutuları göster
             x, y, w, h = boxes[i]
+            
+            # ROI'nin geçerli olup olmadığını kontrol edin
+            if x < 0 or y < 0 or x + w > width or y + h > height:
+                continue  # Geçersiz kutuları atla
+            
             roi = frame[y:y+h, x:x+w]
+            
+            # ROI'nin boş olmadığını kontrol edin
+            if roi.size == 0:
+                continue  # Geçersiz ROI atla
+
             roi_resized = cv2.resize(roi, (224, 224)) / 255.0  # Model girdi boyutuna göre
             roi_resized = np.expand_dims(roi_resized, axis=0)
 

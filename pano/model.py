@@ -38,4 +38,4 @@ history = model.fit(
 )
 
 # Modeli kaydetme
-model.save('pano_modeli3.keras')
+model.save('model_egitim.keras')
