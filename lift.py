@@ -9,7 +9,7 @@ output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # Yeni eğitilmiş TensorFlow modelinizi yükleyin
 model = tf.keras.models.load_model("model_egitim.keras")  # Yeni model dosyası adı burada
-labels = {0: 'devre kesici', 1: 'inventer', 2: 'klemens', 3: 'kontaktor'}  # Modelin sınıflandırdığı etiketler
+labels = {0: 'Devre Kesici', 1: 'inventer', 2: 'Klemens', 3: 'Kontaktor'}  # Modelin sınıflandırdığı etiketler
 
 cap = cv2.VideoCapture(0)
 
