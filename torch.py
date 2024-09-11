@@ -1,15 +1,22 @@
 import cv2
 import numpy as np
-import tensorflow as tf
+import torch
+import torch.nn as nn
+import torchvision.transforms as transforms
 
-# YOLO modelini yükleyin (mevcut nesne tespiti için)
-net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
-layer_names = net.getLayerNames()
-output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
+# PyTorch modelini yükleyin
+model = torch.load("model_egitim.pth")  # Yeni model dosyası adı burada
+model.eval()  # Modeli değerlendirme moduna alın
 
-# Yeni eğitilmiş TensorFlow modelinizi yükleyin
-model = tf.keras.models.load_model("model_egitim.keras")  # Yeni model dosyası adı burada
-labels = {0: 'Devre Kesici', 1: 'Inventer Sürücü', 2: 'Klemens', 3: 'Kontaktör'}  # Modelin sınıflandırdığı etiketler
+# Sınıf etiketleri
+labels = {0: 'Devre Kesici', 1: 'Inventer Sürücü', 2: 'Klemens', 3: 'Kontaktör'}
+
+# Görüntü dönüşüm işlemleri
+transform = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+])
 
 cap = cv2.VideoCapture(0)
 
@@ -22,6 +29,10 @@ while True:
     height, width, channels = frame.shape
 
     # YOLO için ön işleme
+    net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
+    layer_names = net.getLayerNames()
+    output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
+
     blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
     net.setInput(blob)
     outs = net.forward(output_layers)
@@ -69,15 +80,18 @@ while True:
             if roi.size == 0:
                 continue  # Geçersiz ROI atla
 
-            roi_resized = cv2.resize(roi, (224, 224)) / 255.0  # Model girdi boyutuna göre
-            roi_resized = np.expand_dims(roi_resized, axis=0)
+            # Görüntü dönüştürme işlemi
+            roi_transformed = transform(roi)
+            roi_transformed = roi_transformed.unsqueeze(0)  # Batch boyutunu ekleyin
 
             # Parça sınıflandırması yap
-            predictions = model.predict(roi_resized)
-            predicted_label = labels[np.argmax(predictions)]
-            
+            with torch.no_grad():
+                predictions = model(roi_transformed)
+                predicted_label_idx = predictions.argmax(dim=1).item()
+                predicted_label = labels[predicted_label_idx]
+
             # Çerçeve ve etiket çiz
-            label = "{}: {:.2f}%".format(predicted_label, np.max(predictions) * 100)
+            label = "{}: {:.2f}%".format(predicted_label, torch.softmax(predictions, dim=1).max().item() * 100)
             color = (0, 255, 0)  # Yeşil renk ile çerçeve çiz
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)

@@ -1,5 +1,6 @@
 yolo3.weights
 yolo3.cfg
+.venv
 .venv/Lib/site-packages/distutils-precedence.pth
 .venv/Lib/site-packages/numpy-1.26.4-cp312-cp312-win_amd64.whl
 .venv/Lib/site-packages/scipy-1.14.0-cp312-cp312-win_amd64.whl
