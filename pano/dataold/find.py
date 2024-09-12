@@ -32,4 +32,4 @@ def search_and_download_images(query, num_images, save_folder):
         download_image(img_url, save_path)
 
 # Example usage
-search_and_download_images('kontaktör2', 100, 'görsel bul\kontaktor')
+search_and_download_images('geçmeli Yeşil Klemensler', 20, 'görsel bul\Klemensler')

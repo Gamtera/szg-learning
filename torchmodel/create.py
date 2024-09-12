@@ -12,11 +12,11 @@ transform = transforms.Compose([
 ])
 
 # Eğitim veri seti
-train_dataset = datasets.ImageFolder('veri_dizini/train', transform=transform)
+train_dataset = datasets.ImageFolder('torchmodel/veri_dizini/train', transform=transform)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
 # Doğrulama veri seti
-val_dataset = datasets.ImageFolder('veri_dizini/val', transform=transform)
+val_dataset = datasets.ImageFolder('torchmodel/veri_dizini/val', transform=transform)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
 # Önceden eğitilmiş bir ResNet18 modeli yükleyin
@@ -80,6 +80,6 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
     return model
 
 # Modeli eğit
-model = train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs=10)
+model = train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs=50)
 
-torch.save(model, 'model_egitim.pth')
+torch.save(model, 'model_egitim50.pth')
